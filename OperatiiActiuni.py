@@ -79,7 +79,7 @@ class Actiuni:
         cls.buget_lunar=0
         
     @classmethod
-    def convertire_valori(cls,valori):
+    def convertire_valori(cls,valori): #primeste o lista de valori si da o lista de fluctuatii
         fluctuatii=[0]*len(valori)
         fluctuatii[0]=1
         

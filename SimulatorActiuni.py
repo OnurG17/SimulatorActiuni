@@ -1,6 +1,7 @@
 import matplotlib
 matplotlib.use("TkAgg")
 import tkinter
+from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from dataclasses import dataclass
@@ -88,6 +89,11 @@ class Simulator(tkinter.Tk):
         
         self.buton_rebalansare=tkinter.Button(self.Control,text="Aplica rebalansare",command=self.adauga_portofoliu)
         self.buton_rebalansare.grid(row=2,column=2,padx=20,pady=5)
+        
+        self.optiuni_actiuni=["Niciuna"]
+        self.optiuni=ttk.Combobox(self.Control,values=self.optiuni_actiuni,state="readonly")
+        self.optiuni.current(0)
+        self.optiuni.grid(row=3,column=2)
         
         self.Control.pack(expand=True)
         
