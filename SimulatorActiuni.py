@@ -42,7 +42,7 @@ class Simulator(tkinter.Tk):
         self.Panou.draw() #.draw_idle()
 
     def componente_input(self):
-        self.Control=tkinter.Frame(self)
+        self.Control=ttk.Frame(self)
 
         self.nume_label=tkinter.Label(self.Control,text="Nume")
         self.nume_label.grid(row=0,column=0,padx=0,pady=5)
@@ -90,12 +90,35 @@ class Simulator(tkinter.Tk):
         self.buton_rebalansare=tkinter.Button(self.Control,text="Aplica rebalansare",command=self.adauga_portofoliu)
         self.buton_rebalansare.grid(row=2,column=2,padx=20,pady=5)
         
+        self.corelatie_label=tkinter.Label(self.Control,text="Corelatie si coeficient")
+        self.corelatie_label.grid(row=3,column=2,padx=0,pady=5)
+        
         self.optiuni_actiuni=["Niciuna"]
         self.optiuni=ttk.Combobox(self.Control,values=self.optiuni_actiuni,state="readonly")
+        self.optiuni.bind("<<ComboboxSelected>>",self.reactie_combobox)
         self.optiuni.current(0)
-        self.optiuni.grid(row=3,column=2)
+        self.optiuni.grid(row=4,column=2,padx=20)
+        
+        self.coeficient=tkinter.DoubleVar(value=0)
+        self.precizie=ttk.Spinbox(self.Control,from_=-1,to=1,increment=0.01,textvariable=self.coeficient,state="readonly",width=5)
+        self.precizie.grid(row=5,column=3)
+        self.scala=ttk.Scale(self.Control,from_=-1,to=1,variable=self.coeficient,state="readonly")
+        self.scala.grid(row=5,column=2)
+        
+        self.precizie.grid_remove()
+        self.scala.grid_remove()
         
         self.Control.pack(expand=True)
+    
+    def reactie_combobox(self,event):
+        if event.widget.get()!="Niciuna":
+            print("correlatie folosita")
+            self.precizie.grid()
+            self.scala.grid()
+        else:
+            self.precizie.grid_remove()
+            self.scala.grid_remove()
+            self.coeficient.set(0)
         
     def adauga_portofoliu(self):
         x=list(range(Actiuni.luni))
@@ -146,6 +169,10 @@ class Simulator(tkinter.Tk):
             if Actiuni.luni==0:
                 Actiuni.timp_actiuni(valoare_durata)
                 
+            if nume_actiune not in self.optiuni_actiuni:
+                self.optiuni_actiuni.append(nume_actiune.strip())
+                self.optiuni["values"]=tuple(self.optiuni_actiuni)
+                
             Actiuni.date_actiune(nume_actiune,valoare_performanta,valoare_volatilitate)
             
             x=list(range(Actiuni.luni))
@@ -168,6 +195,9 @@ class Simulator(tkinter.Tk):
         self.durata_entry.delete(0,tkinter.END)
         self.contributie_entry.delete(0,tkinter.END)
         self.contributie_entry.insert(0,"0")
+        
+        self.optiuni_actiuni=["Niciuna"]
+        self.optiuni["values"]=tuple(self.optiuni_actiuni)
         
         Actiuni.resetare()
         
