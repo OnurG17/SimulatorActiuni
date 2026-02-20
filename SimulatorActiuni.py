@@ -95,11 +95,12 @@ class Simulator(tkinter.Tk):
         
         self.optiuni_actiuni=["Niciuna"]
         self.optiuni=ttk.Combobox(self.Control,values=self.optiuni_actiuni,state="readonly")
-        self.optiuni.bind("<<ComboboxSelected>>",self.reactie_combobox)
+        self.optiuni.bind("<<ComboboxSelected>>",self.corelatie_combobox)
         self.optiuni.current(0)
         self.optiuni.grid(row=4,column=2,padx=20)
         
         self.coeficient=tkinter.DoubleVar(value=0)
+        
         self.precizie=ttk.Spinbox(self.Control,from_=-1,to=1,increment=0.01,textvariable=self.coeficient,state="readonly",width=5)
         self.precizie.grid(row=5,column=3)
         self.scala=ttk.Scale(self.Control,from_=-1,to=1,variable=self.coeficient,state="readonly")
@@ -110,7 +111,7 @@ class Simulator(tkinter.Tk):
         
         self.Control.pack(expand=True)
     
-    def reactie_combobox(self,event):
+    def corelatie_combobox(self,event):
         if event.widget.get()!="Niciuna":
             print("correlatie folosita")
             self.precizie.grid()
@@ -121,6 +122,7 @@ class Simulator(tkinter.Tk):
             self.coeficient.set(0)
         
     def adauga_portofoliu(self):
+        if Actiuni.luni==0: return #caz in care portofoliul e gol
         x=list(range(Actiuni.luni))
         y=Actiuni.rebalansare()
 
@@ -175,6 +177,9 @@ class Simulator(tkinter.Tk):
                 
             Actiuni.date_actiune(nume_actiune,valoare_performanta,valoare_volatilitate)
             
+            if self.optiuni.get()!="Niciuna":
+                Actiuni.correlatii_actiune(nume_actiune,self.optiuni.get(), self.coeficient.get())
+            
             x=list(range(Actiuni.luni))
             y=Actiuni.valori_actiune(nume_actiune,valoare_suma,valoare_contributie)
             
@@ -198,6 +203,11 @@ class Simulator(tkinter.Tk):
         
         self.optiuni_actiuni=["Niciuna"]
         self.optiuni["values"]=tuple(self.optiuni_actiuni)
+        self.optiuni.current(0)
+        
+        self.precizie.grid_remove()
+        self.scala.grid_remove()
+        self.coeficient.set(0)
         
         Actiuni.resetare()
         

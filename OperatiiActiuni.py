@@ -2,8 +2,12 @@ import numpy
 import math
 
 class Actiuni:
-    DictionarFluctuatiiActiuni={} #cheile sunt nume de actiuni si valorile asociate sunt liste cu fluctuatii.
-
+    DictionarFluctuatiiActiuni: dict[str,list[float]]={} #cheile sunt nume de actiuni si valorile asociate sunt liste cu fluctuatii.
+    
+    DictionarCorelatii={}
+    
+    DictionarCoeficienti={}
+    
     luni=0
     buget_initial=0
     buget_lunar=0
@@ -30,6 +34,11 @@ class Actiuni:
 
         cls.DictionarFluctuatiiActiuni[nume]=fluctuatii
 
+    @classmethod
+    def correlatii_actiune(cls,nume,referinta,coeficient):
+        cls.DictionarCorelatii[nume]=referinta
+        cls.DictionarCoeficienti[nume]=coeficient
+        
     @classmethod
     def valori_actiune(cls,nume,suma_start,suma_lunar):
         cls.buget_initial=suma_start
